@@ -90,7 +90,15 @@ app.get('/:handle', async (req, res) => {
 
 // Function to get channel ID from YouTube handle
 async function getChannelId(handle) {
-  if (!handle) return null;
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${handle}&key=${YOUTUBE_API_KEY}`;
-  try {
-    const response = await axios.get(ur
+    if (!handle) return null;
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${handle}&key=${YOUTUBE_API_KEY}`;
+    try {
+        const response = await axios.get(url);
+        if (response.data.items && response.data.items.length > 0) {
+            return response.data.items[0].snippet.channelId;
+        }
+    } catch (error) {
+        console.error(`Error fetching channel ID:`, error.message);
+    }
+    return null;
+}
