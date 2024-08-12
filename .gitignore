@@ -13,3 +13,4 @@ logs/
 .idea/
 *.sublime-workspace
 *.sublime-project
+.vercel
