@@ -1,0 +1,15 @@
+# Node modules directory
+node_modules/
+
+# Environment variables file
+.env
+
+# Logs
+logs/
+*.log
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
