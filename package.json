@@ -20,7 +20,7 @@
 
   {
     "dependencies": {
-      "serverless-http": "^x.x.x",  // Replace x.x.x with the installed version
+      "serverless-http": "^3.2.0",  // Replace x.x.x with the installed version
       // other dependencies
     }
   }
