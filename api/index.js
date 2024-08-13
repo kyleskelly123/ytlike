@@ -1,13 +1,13 @@
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const serverless = require('serverless-http');
 const NodeCache = require('node-cache');
 require('dotenv').config();
 
 const app = express();
 const channelCache = new NodeCache({ stdTTL: 86400 }); // Cache TTL is set to 1 day (86400 seconds)
 
-// Function to fetch channel thumbnails with caching
 async function fetchChannelThumbnails(channelIds, apiKey) {
   const cachedThumbnails = {};
   const uncachedChannelIds = [];
@@ -31,7 +31,7 @@ async function fetchChannelThumbnails(channelIds, apiKey) {
     response.data.items.forEach(channel => {
       const thumbnailUrl = channel.snippet.thumbnails.default.url;
       cachedThumbnails[channel.id] = thumbnailUrl;
-      channelCache.set(channel.id, thumbnailUrl); // Cache the thumbnail
+      channelCache.set(channel.id, thumbnailUrl);
     });
 
     return cachedThumbnails;
@@ -41,21 +41,18 @@ async function fetchChannelThumbnails(channelIds, apiKey) {
   }
 }
 
-// Function to extract handle from YouTube URL
 function extractHandle(youtubeLink) {
   if (!youtubeLink) return null;
   const atIndex = youtubeLink.indexOf('@');
   return atIndex !== -1 ? youtubeLink.substring(atIndex + 1).trim() : null;
 }
 
-// Utility function to get random entries
 function getRandomEntries(entries, excludeHandle) {
   const filteredEntries = entries.filter(entry => entry.handle !== excludeHandle);
   const shuffled = filteredEntries.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, 4); // Get 4 random entries
+  return shuffled.slice(0, 4);
 }
 
-// Example route to render a page with an entry and random entries
 app.get('/entry/:handle', async (req, res) => {
   const handle = req.params.handle;
 
@@ -93,3 +90,7 @@ app.get('/entry/:handle', async (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Export the app wrapped with serverless-http for Vercel
+module.exports = app;
+module.exports.handler = serverless
