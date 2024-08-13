@@ -80,7 +80,7 @@
                         <% randomEntries.forEach(randomEntry => { %>
                         <div id="w-node-_642cddaf-68d5-6a91-42cc-1a602c025249-210d55eb" role="listitem" class="youtube-single-box w-dyn-item">
                           <a href="/<%= randomEntry.handle %>" class="w-inline-block">
-                            <div class="single-box-inner"><img src="/images/img-placeholder.png" loading="lazy" id="channelThumbnail" alt="" class="single-box-thumbnail w-dyn-bind-empty">
+                            <div class="single-box-inner"><img src="<%= randomEntry.thumbnail %>" loading="lazy" id="channelThumbnail" alt="" class="single-box-thumbnail w-dyn-bind-empty">
                               <h3 class="single-creator-name w-dyn-bind-empty"><%= randomEntry.handle %></h3>
                             </div>
                           </a>
