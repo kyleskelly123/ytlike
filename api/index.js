@@ -8,6 +8,7 @@ require('dotenv').config();
 const app = express();
 const channelCache = new NodeCache({ stdTTL: 86400 }); // Cache TTL is set to 1 day (86400 seconds)
 
+// Function to fetch channel thumbnails with caching
 async function fetchChannelThumbnails(channelIds, apiKey) {
   const cachedThumbnails = {};
   const uncachedChannelIds = [];
@@ -53,6 +54,11 @@ function getRandomEntries(entries, excludeHandle) {
   return shuffled.slice(0, 4);
 }
 
+// Root route
+app.get('/', (req, res) => {
+  res.send('Welcome to the YouTube Channels App!');
+});
+
 app.get('/entry/:handle', async (req, res) => {
   const handle = req.params.handle;
 
@@ -87,10 +93,10 @@ app.get('/entry/:handle', async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 
 // Export the app wrapped with serverless-http for Vercel
 module.exports = app;
-module.exports.handler = serverless
+module.exports.handler = serverless(app);
