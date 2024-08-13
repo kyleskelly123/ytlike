@@ -70,6 +70,34 @@
                   </div>
                 </div>
                 <div class="w-layout-hflex lower-boxes">
+                  <div class="w-layout-vflex creator-recent-videos">
+                    <div class="combi-title">
+                      <h3 class="combi-title-red w-dyn-bind-empty"></h3>
+                      <h3 class="combi-title-white"><%= entry.handle %> Recent Videos</h3>
+                    </div>
+                    <div class="w-layout-hflex recent-videos-box">
+                      <a id="videoLink1" href="#" class="video-link w-inline-block">
+                        <article class="w-layout-vflex recent-video"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" id="thumbnailImage1" alt="" class="recent-video-thumb w-dyn-bind-empty">
+                          <div id="thumbnailTitle1" class="recent-video-title w-dyn-bind-empty"></div>
+                        </article>
+                      </a>
+                      <a id="videoLink2" href="#" class="video-link w-inline-block">
+                        <div class="w-layout-vflex recent-video"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" id="thumbnailImage2" alt="" class="recent-video-thumb w-dyn-bind-empty">
+                          <div id="thumbnailTitle2" class="recent-video-title w-dyn-bind-empty"></div>
+                        </div>
+                      </a>
+                      <a id="videoLink3" href="#" class="video-link w-inline-block">
+                        <div class="w-layout-vflex recent-video"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" id="thumbnailImage3" alt="" class="recent-video-thumb w-dyn-bind-empty">
+                          <div id="thumbnailTitle3" class="recent-video-title w-dyn-bind-empty"></div>
+                        </div>
+                      </a>
+                      <a id="videoLink4" href="#" class="video-link w-inline-block">
+                        <div class="w-layout-vflex recent-video"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" id="thumbnailImage4" alt="" class="recent-video-thumb w-dyn-bind-empty">
+                          <div id="thumbnailTitle4" class="recent-video-title w-dyn-bind-empty"></div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
                   <div class="w-layout-vflex youtubers-like-box">
                     <div class="combi-title">
                       <h2 class="combi-title-white">YouTuber&#x27;s Like <%= entry.handle %></h2>
@@ -80,7 +108,7 @@
                         <% randomEntries.forEach(randomEntry => { %>
                         <div id="w-node-_642cddaf-68d5-6a91-42cc-1a602c025249-210d55eb" role="listitem" class="youtube-single-box w-dyn-item">
                           <a href="/<%= randomEntry.handle %>" class="w-inline-block">
-                            <div class="single-box-inner"><img src="<%= randomEntry.thumbnail %>" loading="lazy" id="channelThumbnail" alt="" class="single-box-thumbnail w-dyn-bind-empty">
+                            <div class="single-box-inner"><img src="/images/img-placeholder.png" loading="lazy" id="channelThumbnail" alt="" class="single-box-thumbnail w-dyn-bind-empty">
                               <h3 class="single-creator-name w-dyn-bind-empty"><%= randomEntry.handle %></h3>
                             </div>
                           </a>
@@ -143,6 +171,34 @@
                 document.getElementById('videoCount').innerText = 'Error loading';
                 document.getElementById('viewCount').innerText = 'Error loading';
                 document.getElementById('channelDescription').innerText = 'Error loading';
+            }
+        }
+
+        async function getRecentVideos(channelId, apiKey) {
+            const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&maxResults=4`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log('Videos Response:', data); // Log the response to see what's returned
+                if (data.items && data.items.length > 0) {
+                    const videos = data.items;
+                    // Assuming you have 4 placeholders in your HTML
+                    for (let i = 0; i < videos.length; i++) {
+                        const video = videos[i];
+                        const videoId = video.id.videoId;
+                        const videoTitle = video.snippet.title;
+                        const videoThumbnail = video.snippet.thumbnails.medium.url;
+                        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                        // Update the HTML elements
+                        document.getElementById(`thumbnailImage${i + 1}`).src = videoThumbnail;
+                        document.getElementById(`thumbnailTitle${i + 1}`).innerText = videoTitle;
+                        document.getElementById(`videoLink${i + 1}`).href = videoUrl;
+                    }
+                } else {
+                    console.log('No videos found');
+                }
+            } catch (error) {
+                console.error('Error fetching recent videos:', error);
             }
         }
 
